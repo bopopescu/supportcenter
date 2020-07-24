@@ -787,8 +787,8 @@ class QuerySetTest(unittest.TestCase):
 
             self.assertEqual(q, 3)
 
-    def test_slave_okay(self):
-        """Ensures that a query can take slave_okay syntax
+    def test_subordinate_okay(self):
+        """Ensures that a query can take subordinate_okay syntax
         """
         person1 = self.Person(name="User A", age=20)
         person1.save()
@@ -796,7 +796,7 @@ class QuerySetTest(unittest.TestCase):
         person2.save()
 
         # Retrieve the first person from the database
-        person = self.Person.objects.slave_okay(True).first()
+        person = self.Person.objects.subordinate_okay(True).first()
         self.assertTrue(isinstance(person, self.Person))
         self.assertEqual(person.name, "User A")
         self.assertEqual(person.age, 20)
@@ -807,23 +807,23 @@ class QuerySetTest(unittest.TestCase):
         p = self.Person.objects
         # Check default
         self.assertEqual(p._cursor_args,
-                {'snapshot': False, 'slave_okay': False, 'timeout': True})
+                {'snapshot': False, 'subordinate_okay': False, 'timeout': True})
 
-        p = p.snapshot(False).slave_okay(False).timeout(False)
+        p = p.snapshot(False).subordinate_okay(False).timeout(False)
         self.assertEqual(p._cursor_args,
-                {'snapshot': False, 'slave_okay': False, 'timeout': False})
+                {'snapshot': False, 'subordinate_okay': False, 'timeout': False})
 
-        p = p.snapshot(True).slave_okay(False).timeout(False)
+        p = p.snapshot(True).subordinate_okay(False).timeout(False)
         self.assertEqual(p._cursor_args,
-                {'snapshot': True, 'slave_okay': False, 'timeout': False})
+                {'snapshot': True, 'subordinate_okay': False, 'timeout': False})
 
-        p = p.snapshot(True).slave_okay(True).timeout(False)
+        p = p.snapshot(True).subordinate_okay(True).timeout(False)
         self.assertEqual(p._cursor_args,
-                {'snapshot': True, 'slave_okay': True, 'timeout': False})
+                {'snapshot': True, 'subordinate_okay': True, 'timeout': False})
 
-        p = p.snapshot(True).slave_okay(True).timeout(True)
+        p = p.snapshot(True).subordinate_okay(True).timeout(True)
         self.assertEqual(p._cursor_args,
-                         {'snapshot': True, 'slave_okay': True, 'timeout': True})
+                         {'snapshot': True, 'subordinate_okay': True, 'timeout': True})
 
     def test_repeated_iteration(self):
         """Ensure that QuerySet rewinds itself one iteration finishes.

@@ -37,8 +37,8 @@ class UserSyncOffline(SyncOfflineModule):
 
     class Meta:
         name = 'user'
-        master = 'e' #Aceita apenas exportação
-        slave = 'i' #Aceita apenas importação
+        main = 'e' #Aceita apenas exportação
+        subordinate = 'i' #Aceita apenas importação
 
 class UnidadeGroupSyncOffline(SyncOfflineModule):
     def get_queryset(self, unidade, date):
@@ -46,8 +46,8 @@ class UnidadeGroupSyncOffline(SyncOfflineModule):
 
     class Meta:
         name = "unidade_group"
-        master = 'e' #Aceita apenas exportação
-        slave = 'i' #Aceita apenas importação
+        main = 'e' #Aceita apenas exportação
+        subordinate = 'i' #Aceita apenas importação
 
 
 class HistoricSyncOffline(SyncOfflineModule):
@@ -71,5 +71,5 @@ class HistoricSyncOffline(SyncOfflineModule):
 
     class Meta:
         name = "historic"
-        master = 'i' #Aceita apenas importação
-        slave = 'e' #Aceita apenas exportação
+        main = 'i' #Aceita apenas importação
+        subordinate = 'e' #Aceita apenas exportação

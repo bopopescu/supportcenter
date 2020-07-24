@@ -54,7 +54,7 @@ class BaseQuerySet(object):
         self._snapshot = False
         self._timeout = True
         self._class_check = True
-        self._slave_okay = False
+        self._subordinate_okay = False
         self._read_preference = None
         self._iter = False
         self._scalar = []
@@ -75,7 +75,7 @@ class BaseQuerySet(object):
         self._skip = None
         self._hint = -1  # Using -1 as None is a valid value for hint
 
-    def __call__(self, q_obj=None, class_check=True, slave_okay=False,
+    def __call__(self, q_obj=None, class_check=True, subordinate_okay=False,
                  read_preference=None, **query):
         """Filter the selected documents by calling the
         :class:`~mongoengine.queryset.QuerySet` with a query.
@@ -86,7 +86,7 @@ class BaseQuerySet(object):
             objects, only the last one will be used
         :param class_check: If set to False bypass class name check when
             querying collection
-        :param slave_okay: if True, allows this query to be run against a
+        :param subordinate_okay: if True, allows this query to be run against a
             replica secondary.
         :params read_preference: if set, overrides connection-level
             read_preference from `ReplicaSetConnection`.
@@ -536,7 +536,7 @@ class BaseQuerySet(object):
 
         copy_props = ('_mongo_query', '_initial_query', '_none', '_query_obj',
                       '_where_clause', '_loaded_fields', '_ordering', '_snapshot',
-                      '_timeout', '_class_check', '_slave_okay', '_read_preference',
+                      '_timeout', '_class_check', '_subordinate_okay', '_read_preference',
                       '_iter', '_scalar', '_as_pymongo', '_as_pymongo_coerce',
                       '_limit', '_skip', '_hint', '_auto_dereference')
 
@@ -761,13 +761,13 @@ class BaseQuerySet(object):
         queryset._timeout = enabled
         return queryset
 
-    def slave_okay(self, enabled):
-        """Enable or disable the slave_okay when querying.
+    def subordinate_okay(self, enabled):
+        """Enable or disable the subordinate_okay when querying.
 
-        :param enabled: whether or not the slave_okay is enabled
+        :param enabled: whether or not the subordinate_okay is enabled
         """
         queryset = self.clone()
-        queryset._slave_okay = enabled
+        queryset._subordinate_okay = enabled
         return queryset
 
     def read_preference(self, read_preference):
@@ -1160,7 +1160,7 @@ class BaseQuerySet(object):
         if self._read_preference is not None:
             cursor_args['read_preference'] = self._read_preference
         else:
-            cursor_args['slave_okay'] = self._slave_okay
+            cursor_args['subordinate_okay'] = self._subordinate_okay
         if self._loaded_fields:
             cursor_args['fields'] = self._loaded_fields.as_dict()
         return cursor_args

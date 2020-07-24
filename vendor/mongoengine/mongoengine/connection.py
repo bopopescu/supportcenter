@@ -19,7 +19,7 @@ _dbs = {}
 
 
 def register_connection(alias, name, host='localhost', port=27017,
-                        is_slave=False, read_preference=False, slaves=None,
+                        is_subordinate=False, read_preference=False, subordinates=None,
                         username=None, password=None, **kwargs):
     """Add a connection.
 
@@ -28,12 +28,12 @@ def register_connection(alias, name, host='localhost', port=27017,
     :param name: the name of the specific database to use
     :param host: the host name of the :program:`mongod` instance to connect to
     :param port: the port that the :program:`mongod` instance is running on
-    :param is_slave: whether the connection can act as a slave
+    :param is_subordinate: whether the connection can act as a subordinate
       ** Depreciated pymongo 2.0.1+
     :param read_preference: The read preference for the collection
        ** Added pymongo 2.1
-    :param slaves: a list of aliases of slave connections; each of these must
-        be a registered connection that has :attr:`is_slave` set to ``True``
+    :param subordinates: a list of aliases of subordinate connections; each of these must
+        be a registered connection that has :attr:`is_subordinate` set to ``True``
     :param username: username to authenticate with
     :param password: password to authenticate with
     :param kwargs: allow ad-hoc parameters to be passed into the pymongo driver
@@ -45,8 +45,8 @@ def register_connection(alias, name, host='localhost', port=27017,
         'name': name,
         'host': host,
         'port': port,
-        'is_slave': is_slave,
-        'slaves': slaves or [],
+        'is_subordinate': is_subordinate,
+        'subordinates': subordinates or [],
         'username': username,
         'password': password,
         'read_preference': read_preference
@@ -96,17 +96,17 @@ def get_connection(alias=DEFAULT_CONNECTION_NAME, reconnect=False):
 
         if hasattr(pymongo, 'version_tuple'):  # Support for 2.1+
             conn_settings.pop('name', None)
-            conn_settings.pop('slaves', None)
-            conn_settings.pop('is_slave', None)
+            conn_settings.pop('subordinates', None)
+            conn_settings.pop('is_subordinate', None)
             conn_settings.pop('username', None)
             conn_settings.pop('password', None)
         else:
-            # Get all the slave connections
-            if 'slaves' in conn_settings:
-                slaves = []
-                for slave_alias in conn_settings['slaves']:
-                    slaves.append(get_connection(slave_alias))
-                conn_settings['slaves'] = slaves
+            # Get all the subordinate connections
+            if 'subordinates' in conn_settings:
+                subordinates = []
+                for subordinate_alias in conn_settings['subordinates']:
+                    subordinates.append(get_connection(subordinate_alias))
+                conn_settings['subordinates'] = subordinates
                 conn_settings.pop('read_preference', None)
 
         connection_class = MongoClient
